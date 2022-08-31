@@ -1,15 +1,17 @@
-FROM golang:1.19-alpine
+FROM golang:alpine AS builder
 
-WORKDIR /app
+RUN apk update && apk add --no-cache git
 
-COPY go.mod ./
+WORKDIR $GOPATH/src/mypackage/myapp/
 
-RUN go mod download
+COPY . .
 
-COPY *.go ./
+RUN go get -d -v
 
-RUN go build -o /main
+RUN go build -o /go/bin/fullcycle
 
-EXPOSE 8080
+FROM scratch
 
-CMD [ "/main" ]
+COPY --from=builder /go/bin/fullcycle /go/bin/fullcycle
+
+ENTRYPOINT ["/go/bin/fullcycle"]
