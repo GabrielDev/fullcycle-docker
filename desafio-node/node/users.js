@@ -1,10 +1,10 @@
 import mysql from 'mysql';
 
 const config = {
-  host: 'db',
-  user: 'root',
-  password: 'root',
-  database: 'nodedb',
+  host: process.env.HOST,
+  user: process.env.USER,
+  password: process.env.PASSWORD,
+  database: process.env.DATABASE,
 };
 
 const execQuery = async (sql, callback) => {

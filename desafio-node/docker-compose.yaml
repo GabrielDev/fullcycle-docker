@@ -12,6 +12,10 @@ services:
       - app-network
     environment:
       - PORT=8080
+      - HOST=db
+      - USER=root
+      - PASSWORD=root
+      - DATABASE=nodedb
     ports:
       - "3000:8080"
     depends_on: 
