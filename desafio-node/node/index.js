@@ -1,4 +1,5 @@
 import express from 'express';
+import { migrate } from './db.js';
 import { createUser, getUsers } from './users.js';
 
 const app = express();
@@ -28,4 +29,7 @@ app.get('/', async (req, res) => {
   }
 });
 
-app.listen(PORT, HOST, () => console.log(`🚀 Node APP rodando em: http://${HOST}:${PORT}`));
+app.listen(PORT, HOST, async () => {
+  console.log(`🚀 Node APP rodando em: http://${HOST}:${PORT}`)
+  await migrate();
+});

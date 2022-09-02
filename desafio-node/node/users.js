@@ -1,23 +1,4 @@
-import mysql from 'mysql';
-
-const config = {
-  host: process.env.HOST,
-  user: process.env.USER,
-  password: process.env.PASSWORD,
-  database: process.env.DATABASE,
-};
-
-const execQuery = async (sql, callback) => {
-  try {
-    const connection = mysql.createConnection(config);
-    const result = await connection.query(sql, callback);
-    connection.end();
-    return result;
-  } catch (error) {
-    console.warn(error);
-    throw error;
-  }
-};
+import { execQuery } from './db.js';
 
 const getUserTable = (users = []) => {
   let list = [`
@@ -64,21 +45,7 @@ export const getUsers = async () => {
   });
 };
 
-export const createTableIfNotExists = async () => {
-  const sql = `CREATE TABLE IF NOT EXISTS people (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(255), 
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )`;
-
-  return execQuery(sql, error => {
-    if (error) throw error;
-  });
-};
-
 export const createUser = async (name = 'Full Cycle') => {
-  await createTableIfNotExists();
-
   const sql = `INSERT INTO people(name) values("${name}")`;
 
   return execQuery(sql, error => {

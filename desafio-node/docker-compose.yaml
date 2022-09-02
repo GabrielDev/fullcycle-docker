@@ -6,18 +6,20 @@ services:
       context: ./node
     container_name: app
     restart: unless-stopped
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 20s docker-entrypoint.sh
+    command: "npm start"
     volumes:
-      - ./node:/usr/src/app
+      - app-volume:/usr/src/app
     networks:
       - app-network
     environment:
-      - PORT=8080
+      - PORT=3000
       - HOST=db
       - USER=root
       - PASSWORD=root
       - DATABASE=nodedb
     ports:
-      - "3000:8080"
+      - "3000:3000"
     depends_on: 
       - db
   
@@ -28,7 +30,7 @@ services:
     restart: always
     tty: true
     volumes:
-      - /mysql:/var/lib/mysql/:rw
+      - db-volume:/var/lib/mysql/:rw
     networks:
       - app-network
     environment:
@@ -42,7 +44,6 @@ services:
     container_name: webserver
     restart: unless-stopped
     ports:
-      - "80:80"
       - "8080:80"
     volumes:
       - ./nginx:/etc/nginx/conf.d
@@ -54,4 +55,8 @@ services:
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  app-volume:
+  db-volume:
       
